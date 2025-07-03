@@ -1,103 +1,84 @@
-import Image from "next/image";
+'use client'
+
+import { useState } from 'react'
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [bill, setBill] = useState<number | ''>('')
+  const [people, setPeople] = useState<number | ''>('')
+  const [tip, setTip] = useState<number>(15)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const isValid = typeof bill === 'number' && bill > 0 && typeof people === 'number' && people > 0
+
+  const totalTip = isValid ? (bill * tip) / 100 : 0
+  const totalPerPerson = isValid ? (bill + totalTip) / people : 0
+  const tipPerPerson = isValid ? totalTip / people : 0
+
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-blue-100 to-pink-100 p-6 flex flex-col items-center">
+      <section className="text-center mb-8 mt-10">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Split Your Bill Effortlessly</h1>
+        <p className="text-gray-600 mt-2">Divide expenses quickly and fairly with friends</p>
+      </section>
+
+      <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-md">
+        <form className="space-y-4">
+          <div>
+            <label className="block font-medium text-gray-700">Total Bill Amount ($)</label>
+            <input
+              type="number"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
+              value={bill}
+              onChange={(e) => setBill(Number(e.target.value))}
+              placeholder="e.g. 100"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          </div>
+
+          <div>
+            <label className="block font-medium text-gray-700">Number of People</label>
+            <input
+              type="number"
+              className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
+              value={people}
+              onChange={(e) => setPeople(Number(e.target.value))}
+              placeholder="e.g. 4"
+            />
+          </div>
+
+          <div>
+            <label className="block font-medium text-gray-700 mb-1">
+              Tip: <span className="text-pink-600 font-semibold">{tip}%</span>
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="50"
+              value={tip}
+              onChange={(e) => setTip(Number(e.target.value))}
+              className="w-full"
+            />
+          </div>
+        </form>
+
+        {isValid && (
+          <div className="mt-6 border-t pt-4 text-gray-700">
+            <h3 className="font-semibold text-lg mb-2">Results</h3>
+            <p><strong>Each Person Pays:</strong> ${totalPerPerson.toFixed(2)}</p>
+            <p><strong>Tip per Person:</strong> ${tipPerPerson.toFixed(2)}</p>
+          </div>
+        )}
+
+        <button
+          type="button"
+          className="mt-6 w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded-md font-semibold transition-transform duration-200 hover:scale-105"
+          onClick={() => {}}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+          Split Now
+        </button>
+      </div>
+
+      <footer className="mt-10 text-sm text-gray-500">
+        &copy; 2025 BillSplitter App
       </footer>
-    </div>
-  );
+    </main>
+  )
 }
